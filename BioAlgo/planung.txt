@@ -1,0 +1,12 @@
+Eingabe:
+
+1.globales/lokales Allignment
+2. gap penalty
+
+Zum Algorithmus:
+1.auf die 20 Symbole überprüfen
+2. Datei:
+	1. Zeile: Name der Sequenz
+	Danach Sequenz
+3.Substitutionsmatrix auf studip
+

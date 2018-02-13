@@ -1,0 +1,161 @@
+import java.io.*;
+import java.math.*;
+class allign2{
+	public static String seq1 = "";
+	public static String seq2 = "";
+	public static void main(String[] args){
+		boolean toggle = false;//String 1/String2 toggle
+		int[][] matrix = LoadMatrix();
+		//Einlesen der Datei und zerlegen in die Sequenzen
+		File file = new File("/afs/informatik.uni-goettingen.de/user/o/oskar.wittkamp/BioAlgo/Sequences.txt");
+		if (!file.canRead() || !file.isFile())
+			System.exit(0);
+		BufferedReader input = null;
+		try {
+			input = new BufferedReader(new FileReader (file));
+			String zeile = null;
+			while ((zeile = input.readLine()) != null) {
+				if (zeile.charAt (0) != '>')
+					if(toggle)
+						seq1 += zeile;
+					else
+						seq2 += zeile;
+				else
+					toggle = !toggle;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {	
+				if (input != null)
+				input.close();
+			} catch (IOException e) {
+			}
+		}
+		System.out.println(seq1);
+		System.out.println(seq2);
+		globalallign(1);
+	}
+	
+	public static int[][] LoadMatrix(){ //Verarbeitet díe Datei BLOSUM62 zu einem passenden int[][]
+		int[][] array = new int[20][20];
+		int i = 0;
+		int j = 0;
+		int wert = 0;
+		String s = "GPAVLIMCFYWHKRQNEDST";	//"Indexstring" für Matrix G->0; P->1 etc
+		File file = new File("/afs/informatik.uni-goettingen.de/user/o/oskar.wittkamp/BioAlgo/BLOSUM62.txt");
+		if (!file.canRead() || !file.isFile())
+			System.exit(0);
+		BufferedReader input = null;
+		try {
+			input = new BufferedReader(new FileReader (file));
+			String zeile = null;
+			while ((zeile = input.readLine()) != null) {//Zerlegt die Zeile in char, char, int
+				i = s.indexOf(zeile.charAt(1));
+				j = s.indexOf(zeile.charAt(5));
+				array[i][j] = Integer.parseInt(zeile.substring(7).replaceAll("\\s+", ""));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {	
+				if (input != null)
+				input.close();
+			} catch (IOException e) {
+			}
+		}
+		return array;
+	}
+	
+	public static boolean CheckChars(String s){//checkt nen String auf die 20 basen-chars
+		String t = "GPAVLIMCFYWHKRQNEDST";
+		for (int i = 0; i < s.length(); i++)
+			if (s.indexOf(s.charAt(i)) == -1)
+				return false;
+		return true;
+	}
+	
+	public static int Maximum(int i, int j, int k){//Gibt den größten der 3 ints zurück
+		if (i > j)
+			if(i > k)
+				return i;
+		if (j > k)
+				return j;
+		return k;
+			
+	}
+	
+	public static void globalallign(int g){
+		Node[][] array = new Node[seq1.length][seq2.length];
+		int max;
+		int path;
+		for(int i = 0; i<seq1.length(); i++){
+			for (int j = 0; j<seq2.length(); j++){
+				if (i == 0 && j == 0)
+					array[i][j] = new Node(0, 0);//flasch?!
+					return;
+				if (i == 0)
+					array[i][j] = new Node(array[i][j-1].getMax() - g, 0);
+					return;
+				if(j == 0)
+					array[i][j] = new Node(array[i-1][j].getMax() - g, 2);
+					return;
+				max = Maximum(array[i][j-1].getMax()-g, array[i-1][j-1].getMax(), array[i-1][j].getMax()-g);//s fehlt
+				if (max = array[i][j-1].getMax()-g)
+					path = 0;
+				if (max = array[i-1][j-1].getMax())
+					path = 1;
+				if (max = array[i-1][j].getMax()-g)
+					path = 2;
+				array[i][j] = new Node(max, path);
+				
+				
+			}
+		}	
+	}
+}
+
+class Node{
+	public int max;
+	public int path;
+	
+	public Node(){
+		this.max = 0;
+		this.path = "";
+	}
+	public Node(int max, int path){
+		this.max = max;
+		this.path = path;
+	}
+	public int getpath(){
+		return this.path;
+	}
+	public int getMax(){
+		return this.max;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
